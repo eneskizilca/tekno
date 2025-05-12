@@ -496,10 +496,3 @@ Teknofest 2025 İnsansız Denizaltı Yarışması için geliştirdiğimiz algori
 
 Gelecek çalışmalarda, özellikle yapay zeka modellerinin optimize edilmesi, daha karmaşık ortamlarda test edilmesi ve enerji verimliliğinin artırılması planlanmaktadır.
 
-### KAYNAKLAR
-
-1. OpenCV Belgeleri: https://docs.opencv.org/
-2. TensorFlow Lite Belgeleri: https://www.tensorflow.org/lite
-3. Raspberry Pi Belgeleri: https://www.raspberrypi.org/documentation/
-4. ROS Belgeleri: http://wiki.ros.org/
-5. ESP32 Belgeleri: https://docs.espressif.com/projects/esp-idf/
