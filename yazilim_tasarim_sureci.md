@@ -177,6 +177,9 @@ def detect_cable(frame):
 
 Su altı aracının çevresindeki geometrik cisimleri tespit edebilmesi amacıyla, gerçek zamanlı görüntü işleme ve derin öğrenme yöntemleri birlikte kullanılmıştır. Cisimlerin konum ve şekil bilgileri için YOLOv5 tabanlı bir nesne tanıma modeli eğitilmiştir. Tespit edilen nesnelerin renk bilgisi, YOLO tarafından belirlenen sınırlayıcı kutular (bounding box) içerisinden alınan piksel verileri OpenCV kütüphanesi ile analiz edilerek HSV renk uzayında hesaplanmıştır. Böylece her bir nesnenin şekli, rengi ve sayısı anlık olarak belirlenebilmiştir.
 
+<img width="967" alt="Ekran Resmi 2025-05-13 10 37 39" src="https://github.com/user-attachments/assets/efcd22c9-b248-405e-b77d-571ea2d348fe" />
+Görsel: Şeklin tanınması çalışmaları
+
 ```python
 import cv2
 import torch
