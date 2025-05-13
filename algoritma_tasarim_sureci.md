@@ -5,7 +5,7 @@
 İnsansız denizaltı aracımız, Teknofest 2025 yarışma görevlerini başarıyla tamamlamak için, otonomluk ön planda tutularak tasarlanmıştır. Araç, belirlenen görevleri yerine getirmek için aşağıdaki temel algoritma bileşenlerini içermektedir:
 
 - Sensör Veri İşleme ve Füzyon Algoritmaları
-- Navigasyon ve Rota Planlama Algoritmaları
+- Rota Planlama Algoritmaları
 - Görüntü İşleme ve Nesne Tanıma Algoritmaları
 - Yapay Zeka Tabanlı Karar Verme Mekanizmaları
 - Motor Kontrol ve Stabilizasyon Algoritmaları
@@ -17,7 +17,6 @@ Bu bileşenler, Raspberry Pi 4 ana işlemci ve ESP32 yardımcı kontrol birimind
 ### 2.1. Görev 1: Kayıp Hazine Avı - Atlantis'in Peşinde
 
 Bu görev için gerekli algoritma yetenekleri:
-- GPS/Koordinat tabanlı navigasyon
 - Su altında otonom hareket ve derinlik kontrolü
 - Engel tespiti ve kaçınma
 - Hedef alanı tanıma ve doğrulama
