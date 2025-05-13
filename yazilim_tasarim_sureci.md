@@ -7,7 +7,7 @@
 Aracımızın tüm yazılım bileşenleri Python programlama dili kullanılarak geliştirilmiştir. Python'un tercih edilme sebepleri:
 
 - **Hızlı Geliştirme**: Prototip oluşturma ve geliştirme sürecini hızlandıran yüksek seviyeli yapısı
-- **Zengin Kütüphane Ekosistemi**: OpenCV, NumPy, TensorFlow gibi görüntü işleme ve yapay zeka için güçlü kütüphanelerin varlığı
+- **Zengin Kütüphane Ekosistemi**: OpenCV, NumPy, Yolo gibi görüntü işleme ve yapay zeka için güçlü kütüphanelerin varlığı
 - **Platform Bağımsızlığı**: Raspberry Pi ve ESP32 gibi farklı platformlarda çalışabilmesi
 - **Topluluk Desteği**: Yaygın kullanımı sayesinde karşılaşılan sorunların çözümüne kolay erişim
 - **Düşük Donanım Gereksinimleri**: Sınırlı kaynaklara sahip gömülü sistemlerde bile verimli çalışabilmesi
@@ -175,40 +175,92 @@ def detect_cable(frame):
 
 ### 4.2. Anomali Tespiti Yazılım Uygulaması
 
-TensorFlow ve Keras kullanılarak geliştirilen CNN (Convolutional Neural Network) tabanlı anomali tespit yazılımı:
+Su altı aracının çevresindeki geometrik cisimleri tespit edebilmesi amacıyla, gerçek zamanlı görüntü işleme ve derin öğrenme yöntemleri birlikte kullanılmıştır. Cisimlerin konum ve şekil bilgileri için YOLOv5 tabanlı bir nesne tanıma modeli eğitilmiştir. Tespit edilen nesnelerin renk bilgisi, YOLO tarafından belirlenen sınırlayıcı kutular (bounding box) içerisinden alınan piksel verileri OpenCV kütüphanesi ile analiz edilerek HSV renk uzayında hesaplanmıştır. Böylece her bir nesnenin şekli, rengi ve sayısı anlık olarak belirlenebilmiştir.
 
 ```python
-def load_anomaly_detection_model():
-    # Eğitilmiş modeli yükle
-    model = tf.keras.models.load_model('models/shape_classifier.h5')
-    return model
+import cv2
+import torch
+import numpy as np
+from datetime import datetime
+import os
 
-def detect_anomalies(frame, model, class_names):
-    # Görüntüyü model için hazırla
-    img = cv2.resize(frame, (224, 224))
-    img = img / 255.0  # Normalize et
-    img = np.expand_dims(img, axis=0)
-    
-    # Modeli kullanarak tahmin yap
-    predictions = model.predict(img)
-    predicted_class_idx = np.argmax(predictions[0])
-    confidence = predictions[0][predicted_class_idx]
-    
-    # Eşik değerini geçen tahminleri kabul et
-    if confidence > 0.75:
-        predicted_class = class_names[predicted_class_idx]
-        return True, predicted_class, confidence
+# Klasörleri oluştur (varsa sorun olmaz)
+os.makedirs("anomalies", exist_ok=True)
+
+# YOLOv5 modelini yükle (önceden eğitilmiş modelini path'e göre koy)
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='models/best.pt')
+model.conf = 0.5  # minimum güven skoru
+
+# Sınıf isimlerini al
+class_names = model.names  # örnek: ['daire', 'üçgen', 'kare']
+
+# Renk tespit fonksiyonu (HSV uzayında)
+def get_dominant_color(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    avg = cv2.mean(hsv)[:3]
+    h, s, v = avg
+
+    if h < 10 or h > 160:
+        return "Kırmızı"
+    elif 10 < h < 35:
+        return "Sarı"
+    elif 35 < h < 85:
+        return "Yeşil"
+    elif 85 < h < 130:
+        return "Mavi"
     else:
-        return False, None, None
+        return "Bilinmeyen"
 
-def save_anomaly_data(frame, anomaly_name, confidence, timestamp):
-    # Anomali verilerini kaydet
-    filename = f"anomalies/anomaly_{timestamp}_{anomaly_name}.jpg"
-    cv2.imwrite(filename, frame)
-    
-    # Log dosyasına kaydet
-    with open("anomalies/log.txt", "a") as f:
-        f.write(f"{timestamp}, {anomaly_name}, {confidence:.4f}, {filename}\n")
+# Tespit ve görselleştirme fonksiyonu
+def detect_shapes_and_colors(frame):
+    results = model(frame)
+    detections = results.xyxy[0].cpu().numpy()
+
+    for *box, conf, cls_id in detections:
+        x1, y1, x2, y2 = map(int, box)
+        label = class_names[int(cls_id)]
+
+        # Nesnenin alanını al
+        roi = frame[y1:y2, x1:x2]
+        color = get_dominant_color(roi)
+
+        # Kaydet
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"anomalies/{timestamp}_{label}_{color}.jpg"
+        cv2.imwrite(filename, roi)
+
+        # Ekrana çiz
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
+        text = f"{label}, {color}"
+        cv2.putText(frame, text, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)
+
+    return frame
+
+# Kamera aç (0: dahili, 1: harici kamera olabilir)
+cap = cv2.VideoCapture(0)
+
+print("Başlatıldı. Çıkmak için 'q' tuşuna bas.")
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Kamera görüntüsü alınamadı.")
+        break
+
+    # Cisimleri tespit et
+    processed_frame = detect_shapes_and_colors(frame)
+
+    # Göster
+    cv2.imshow("Canlı Tespit", processed_frame)
+
+    # Çıkış tuşu
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Kapat
+cap.release()
+cv2.destroyAllWindows()
+
 ```
 
 ## 5. Model Eğitimi ve Veri Hazırlama
@@ -373,8 +425,7 @@ Yazılım sistemimiz, Teknofest 2025 görevlerini başarıyla tamamlamak için g
 
 Gelecekte yapılması planlanan yazılım geliştirmeleri:
 
-- TensorRT kullanarak derin öğrenme modellerinin daha da optimize edilmesi
+- Derin öğrenme modeli PyTorch tabanlı YOLOv5 ile çalıştırılmış, gerçek zamanlı nesne ve renk tespiti için OpenCV ile entegre edilmiştir. 
 - ROS (Robot Operating System) entegrasyonu
-- SLAM (Eş Zamanlı Konum Belirleme ve Haritalama) algoritmaları
 - Daha gelişmiş sensör füzyon algoritmalarının uygulanması
 - Edge TPU gibi yapay zeka hızlandırıcıların entegrasyonu
