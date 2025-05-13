@@ -76,29 +76,48 @@ proje/
 
 ## 3. Görev 1: Kayıp Hazine Avı Yazılım Uygulaması
 
-### 3.1. Koordinat Tabanlı Navigasyon Yazılımı
+## 3. Görev 1: Kayıp Hazine Avı Yazılım Uygulaması
 
+### 3.1. Engel Algılama ve Otonom Hareket Yazılımı
 ```python
-# Basit bir koordinat navigasyon örneği
-def navigate_to_coordinates(current_pos, target_pos):
-    # Hedef vektörünü hesapla
-    dx = target_pos[0] - current_pos[0]
-    dy = target_pos[1] - current_pos[1]
-    distance = math.sqrt(dx*dx + dy*dy)
-    heading = math.atan2(dy, dx)
+# Engel algılama ve otonom hareket örneği
+def autonomous_obstacle_avoidance():
+    # Sensörlerden engel verilerini oku
+    front_distance = read_distance_sensor(SENSOR_FRONT)
+    left_distance = read_distance_sensor(SENSOR_LEFT)
+    right_distance = read_distance_sensor(SENSOR_RIGHT)
     
-    # PID kontrolcüsü ile dönüş açısını hesapla
-    heading_error = heading - current_heading
-    turn_rate = heading_pid.compute(heading_error)
+    # Güvenli mesafe eşik değeri
+    safe_distance = 20  # cm
     
-    # İlerleme hızını mesafeye göre ayarla
-    forward_speed = min(max_speed, distance * speed_factor)
+    # Engellere göre hareketi belirle
+    if front_distance < safe_distance:
+        # Önde engel varsa
+        if left_distance > right_distance:
+            # Sol taraf daha açıksa sola dön
+            set_motors(0, -turn_speed)  # Sola dönüş
+        else:
+            # Sağ taraf daha açıksa sağa dön
+            set_motors(0, turn_speed)  # Sağa dönüş
+    else:
+        # Yol açıksa ilerle, ancak yanlardan da engelleri kontrol et
+        forward_speed = base_speed
+        turn_adjustment = 0
+        
+        # Yan sensörlere göre hafif yön düzeltmeleri
+        if left_distance < safe_distance:
+            turn_adjustment = turn_speed * 0.5  # Sağa doğru hafif düzeltme
+        elif right_distance < safe_distance:
+            turn_adjustment = -turn_speed * 0.5  # Sola doğru hafif düzeltme
+            
+        # Motor komutlarını güncelle
+        set_motors(forward_speed, turn_adjustment)
     
-    # Motor komutlarını güncelle
-    set_motors(forward_speed, turn_rate)
-    
-    return distance < arrival_threshold
+    return check_target_reached()  # Hedef kontrolü
 ```
+
+<img width="243" alt="Ekran Resmi 2025-05-13 10 43 58" src="https://github.com/user-attachments/assets/f0d53446-16f4-4e5e-a578-43caf3e3193b" />
+Görsel: Engel tanıtımı ve kablo takip çalışmaları
 
 ### 3.2. Derinlik Kontrolü için PID Yazılımı
 
@@ -172,6 +191,9 @@ def detect_cable(frame):
     else:
         return False, None
 ```
+
+<img width="382" alt="Ekran Resmi 2025-05-13 10 40 33" src="https://github.com/user-attachments/assets/4fe70d92-097d-4207-aed0-d8948205a71f" />
+Görsel: Kablo takip çalışmaları
 
 ### 4.2. Anomali Tespiti Yazılım Uygulaması
 
