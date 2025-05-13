@@ -51,77 +51,33 @@ Bu görev için gerekli algoritma yetenekleri:
 
 Aracın genel çalışma prensibini gösteren ana sistem algoritması akış diyagramı:
 
-```
-[Başlangıç] → [Sistem Başlatma] → [Görev Seçimi] → [Görev 1 veya Görev 2] → [Görev Tamamlandı mı?] → [Sonlandırma]
-```
+<img width="1351" alt="Ekran Resmi 2025-05-13 09 43 49" src="https://github.com/user-attachments/assets/2856689b-a228-4b22-807d-9d68a4b90c2e" />
 
-![Ana Algoritma Akış Diyagramı](https://placeholder/ana_algoritma)
 
 ### 4.2. Görev 1: Kayıp Hazine Avı Algoritmasi
 
-```
-[Başlangıç] → [Koordinat Bilgilerini Al] → [Başlangıç Alanına Git] → [Su Altına Dal] → [Hedef Koordinatlara Doğru İlerle] → [Konum Kontrol] → [Varış Alanında mıyız?] → [Evet ise Su Yüzeyine Çık] → [Görev Tamamlandı]
-```
+<img width="1543" alt="Ekran Resmi 2025-05-13 09 56 48" src="https://github.com/user-attachments/assets/0d8e1ff0-a0b8-4f67-bcc4-9966de445b76" />
 
-![Görev 1 Algoritma Akış Diyagramı](https://placeholder/gorev1_akis)
 
-#### 4.2.1. Koordinat Tabanlı Navigasyon Algoritması
 
-Aracımızın koordinat bilgilerini kullanarak rotasını belirlemesi ve hedefe yönelmesi için geliştirilen algoritma:
 
-```
-1. GPS üzerinden başlangıç ve hedef koordinatlarını al
-2. Hedef vektörü hesapla (yön ve mesafe)
-3. Su altında basınç sensörü ve IMU ile konum takibi yap
-4. Ultrasonik sensörler ile engel tespiti
-5. Rota düzeltmesi gerekiyorsa yeni yörünge hesapla
-6. Motor komutlarını güncelle
-```
-
-#### 4.2.2. Derinlik Kontrol Algoritması
+#### 4.2.1. Derinlik Kontrol Algoritması
 
 Aracın su altında belirli bir derinlikte sabit kalmasını veya kontrollü bir şekilde derinlik değiştirmesini sağlayan algoritma:
 
-```
-1. Basınç sensörü ile mevcut derinliği ölç
-2. Hedef derinlikten farkı hesapla
-3. PID kontrol algoritması ile dikey motor gücünü hesapla
-4. Derinlik kontrolünü sağlamak için motorları güncelle
-```
+<img width="1177" alt="Ekran Resmi 2025-05-13 10 03 50" src="https://github.com/user-attachments/assets/31725798-01d9-4265-aefe-e47ae326738f" />
+
 
 ### 4.3. Görev 2: Su Altı Kabloları Takibi ve Anomali Tespiti Algoritması
 
-```
-[Başlangıç] → [Kamera Kalibrasyonu] → [Kablo Tespiti] → [Kablo Takibi] → [Anomali Tespiti] → [Anomali Tanımlama ve Kaydetme] → [Tüm Kablo Hattı Tarandı mı?] → [Görev Tamamlandı]
-```
+<img width="1243" alt="Ekran Resmi 2025-05-13 10 09 52" src="https://github.com/user-attachments/assets/3c97e38c-9206-469b-aae9-77d4bee4d9b8" />
 
-![Görev 2 Algoritma Akış Diyagramı](https://placeholder/gorev2_akis)
 
-#### 4.3.1. Kablo Takip Algoritması
-
-Su altındaki kabloyu tespit edip takip etmek için geliştirilmiş görüntü işleme tabanlı algoritma:
-
-```
-1. Su altı kamerasını aktifleştir
-2. Görüntüyü ön işleme (gürültü azaltma, kontrast ayarlama)
-3. Kenar tespiti algoritmaları ile kablo sınırlarını belirle
-4. Hough dönüşümü ile kablo yönünü tespit et
-5. Aracı kablo yönü ile hizala
-6. Kablonun takip edilmesi için motor komutlarını güncelle
-```
-
-#### 4.3.2. Anomali Tespit ve Tanımlama Algoritması
+#### 4.3.1. Anomali Tespit ve Tanımlama Algoritması
 
 Kablo üzerindeki anomalileri (şekilleri) tespit etmek ve tanımlamak için geliştirilen yapay zeka destekli algoritma:
 
-```
-1. Eğitilmiş Konvolüsyonel Sinir Ağı (CNN) modelini yükle
-2. Görüntü içinde nesne tespiti yap
-3. Tespit edilen nesnenin özelliklerini çıkar
-4. Önceden tanımlanmış şekillerle eşleştir
-5. Tanımlanan anomaliyi kaydet (zaman, konum, şekil ismi, görüntü)
-6. Araç ekranında tespit edilen anomali ismini göster
-```
+<img width="1334" alt="Ekran Resmi 2025-05-13 10 15 48" src="https://github.com/user-attachments/assets/54f25a32-cd88-41a1-a252-3b2932f5e930" />
 
 ## 5. Algoritma Optimizasyonu ve Performans İyileştirmeleri
 
@@ -170,7 +126,6 @@ Extended Kalman Filter (EKF) kullanılarak sensör verilerinin füzyonu sağlanm
 - Doğrusal olmayan sistemler için uygunluk
 - Sensör gürültülerine karşı dayanıklılık
 - Hesaplama verimliliği
-- Konum tahminindeki yüksek doğruluk
 
 ## 7. Sonuç ve Gelecek Çalışmalar
 
