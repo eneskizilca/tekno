@@ -31,11 +31,7 @@ Bu görev için gerekli algoritma yetenekleri:
 - Şekil tanıma ve sınıflandırma
 - Veri kaydetme ve raporlama
 
-## 3. Sistem Mimarisi ve Algoritma Entegrasyonu
-
-Algoritmalarımız aşağıdaki ana bileşenlerden oluşmaktadır:
-
-![Sistem Mimarisi](https://placeholder/system_mimarisi)
+## 3.Algoritma Entegrasyonu
 
 ### 3.1. Donanım-Yazılım Etkileşimi
 
